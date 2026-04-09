@@ -24,3 +24,17 @@ table <- html_nodes(nhl, css = "table")
 untidy_tables <- html_table(table, header = TRUE, fill = TRUE)
 ```
 
+```{r}
+#Cleaning
+eastern <- untidy_tables[[1]] |>
+  rename(Team = 1) |>
+  slice(-1, -10)
+
+western <- untidy_tables[[2]] |>
+  rename(Team = 1) |>
+  slice(-1, -10)
+  
+full_standings <- western |>
+  full_join(eastern)
+```
+
