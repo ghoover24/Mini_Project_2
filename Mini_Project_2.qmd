@@ -20,6 +20,5 @@ nhl <- read_html("https://www.nhl.com/stats/skaters?reportType=season&seasonFrom
 
 #Step Two
 tables <- html_nodes(nhl, css = "table")
+edit
 ```
-
-
