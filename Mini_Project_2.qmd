@@ -22,6 +22,26 @@ str(nhl)
 #Step Two
 table <- html_nodes(nhl, css = "table")
 untidy_tables <- html_table(table, header = TRUE, fill = TRUE)
+
+scrape <- function(x) {
+  url <- read_html(str_c("https://www.hockey-reference.com/leagues/NHL_", x, ".html")) 
+  table <- html_nodes(url, css = "table")
+  untidy_tables <- html_table(table, header = TRUE, fill = TRUE) 
+  eastern <- untidy_tables[[1]] |>                   # tidy eastern conference
+    rename(Team = 1) |>                              # rename first column      
+    slice(-1, -10)                                   # remove unnecessary rows
+  western <- untidy_tables[[2]] |>                   # tidy western conference
+    rename(Team = 1) |>                              # rename first column
+    slice(-1, -10)                                   # remove unnecessary rows
+  full_standings <- western |>                       # join eastern and western
+    full_join(eastern) |>
+    mutate(season = x)
+  full_standings
+}
+scrape(2026) 
+scrape(2025)
+
+nhl_full_years <- 
 ```
 
 ```{r}
