@@ -24,4 +24,3 @@ table <- html_nodes(nhl, css = "table")
 untidy_tables <- html_table(table, header = TRUE, fill = TRUE)
 ```
 
-edit 
