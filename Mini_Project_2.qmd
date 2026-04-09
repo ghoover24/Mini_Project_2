@@ -13,10 +13,10 @@ library(polite)
 ```
 
 ```{r}
-robotstxt::paths_allowed("https://www.nhl.com/stats/skaters?reportType=season&seasonFrom=20232024&seasonTo=20252026&page=0&pageSize=50")
+robotstxt::paths_allowed("https://www.nhl.com/stats/skaters?reportType=season&seasonFrom=20232024&seasonTo=20252026&gameType=2&sort=points,goals,assists&page=0&pageSize=50")
 
 #Step One
-nhl <- read_html("https://www.nhl.com/stats/skaters?reportType=season&seasonFrom=20232024&seasonTo=20252026&page=0&pageSize=50")
+nhl <- read_html("https://www.nhl.com/stats/skaters?reportType=season&seasonFrom=20252026&seasonTo=20252026&gameType=2&sort=points,goals,assists&page=0&pageSize=50")
 
 #Step Two
 table_idk <- html_nodes(nhl, ".last-left-pinned-column :nth-child(1)")
