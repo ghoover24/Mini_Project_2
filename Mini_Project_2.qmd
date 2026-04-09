@@ -13,12 +13,14 @@ library(polite)
 ```
 
 ```{r}
-robotstxt::paths_allowed("https://www.nhl.com/stats/skaters?reportType=season&seasonFrom=20232024&seasonTo=20252026&page=0&pageSize=50")
+robotstxt::paths_allowed("https://www.hockey-reference.com/leagues/NHL_2026.html")
 
 #Step One
-nhl <- read_html("https://www.nhl.com/stats/skaters?reportType=season&seasonFrom=20232024&seasonTo=20252026&page=0&pageSize=50")
+nhl <- read_html("https://www.hockey-reference.com/leagues/NHL_2026.html")
+str(nhl)
 
 #Step Two
-tables <- html_nodes(nhl, css = "table")
-edit
+table <- html_nodes(nhl, css = "table")
+untidy_tables <- html_table(table, header = TRUE, fill = TRUE)
 ```
+
