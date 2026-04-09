@@ -2,4 +2,24 @@
 title: "Mini_Project_2"
 format: html
 editor: visual
+editor_options: 
+  chunk_output_type: console
 ---
+
+```{r}
+library(tidyverse)
+library(rvest)
+library(polite)
+```
+
+```{r}
+robotstxt::paths_allowed("https://www.nhl.com/stats/skaters?reportType=season&seasonFrom=20232024&seasonTo=20252026&page=0&pageSize=50")
+
+#Step One
+nhl <- read_html("https://www.nhl.com/stats/skaters?reportType=season&seasonFrom=20232024&seasonTo=20252026&page=0&pageSize=50")
+
+#Step Two
+
+```
+
+
