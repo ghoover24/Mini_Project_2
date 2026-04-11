@@ -42,5 +42,7 @@ scrape <- function(x) {
 
 nhl_full_years <- map_df(2022:2026, scrape)          #scrape for past five seasons
 write_csv(nhl_full_years, "NHL_Stats.csv")
+
+head(nhl_full_years)
 ```
 
