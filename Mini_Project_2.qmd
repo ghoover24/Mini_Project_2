@@ -1,6 +1,6 @@
 ---
 title: "Mini_Project_2"
-format: html
+format: pdf
 editor: visual
 editor_options: 
   chunk_output_type: console
