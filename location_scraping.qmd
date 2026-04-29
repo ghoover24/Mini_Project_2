@@ -71,5 +71,7 @@ for(i in 1:32) {
 
 # join two dfs
 locations <- location_tbl |>
-  full_join(coordinates)
+  full_join(coordinates) |>
+  mutate(arena = str_replace(arena, "_", " "),
+         arena = str_replace(arena, "_", " "))
 ```
