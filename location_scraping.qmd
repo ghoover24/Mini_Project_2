@@ -1,0 +1,70 @@
+---
+title: "More Scraping"
+format: html
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r}
+library(tidyverse)
+library(rvest)
+library(polite)
+library(purrr)
+library(httr2)
+library(httr)
+```
+
+```{r}
+robotstxt::paths_allowed("https://en.wikipedia.org/wiki/List_of_National_Hockey_League_arenas")
+
+# Scraping arenas and team name
+locations <- read_html("https://en.wikipedia.org/wiki/List_of_National_Hockey_League_arenas")
+str(locations)
+
+table <- html_nodes(locations, css = "table")                   # scrape tables from wiki
+untidy_tables <- html_table(table, header = TRUE, fill = TRUE)  
+
+location_tbl <- untidy_tables[[1]] |>           # 
+  rename(Image = 1, arena = 2, location = 3,
+         team = 4, capacity = 5, opened = 6,
+         season_one = 7, refs = 8) |>
+  select(arena, team)
+
+# test scrape coordinates
+coord <- read_html("https://en.wikipedia.org/wiki/PPG_Paints_Arena")
+lat_temp <- html_nodes(coord, ".rt-overlay , #mw-content-text .latitude")
+lat_text <- html_text(lat_temp)
+
+long_temp <- html_nodes(coord, ".rt-overlay , #mw-content-text .longitude")
+long_text <- html_text(long_temp)
+
+coordinates <- tibble(lat = lat_text,
+                      long = long_text)
+
+# create arena list
+arenas_col <- location_tbl |> 
+  select(arena) |>
+  mutate(arena = str_replace(arena, " ", "_"),
+         arena = str_replace(arena, " ", "_"))
+arena <-as.list(arenas_col)
+
+# for loop for coordinates
+coordinates <- tibble(latitude = character(), longitude = character(), arena = character())
+
+for(i in 1:32) {
+  url <- str_c("https://en.wikipedia.org/wiki/", arena[[1]][i])
+  one_arena <- GET(url)
+  coord <- read_html(one_arena)
+# latitude scrape
+  lat_temp <- html_nodes(coord, ".rt-overlay , #mw-content-text .latitude")
+  lat_text <- html_text(lat_temp)
+# longitude scrape
+  long_temp <- html_nodes(coord, ".rt-overlay , #mw-content-text .longitude")
+  long_text <- html_text(long_temp)
+
+  coordinates[i,1] <- lat_text[1]
+  coordinates[i,2] <- long_text[1]
+  coordinates[i,3] <- arena[[1]][i]
+}
+
+```
