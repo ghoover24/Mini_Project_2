@@ -28,7 +28,9 @@ location_tbl <- untidy_tables[[1]] |>           #
   rename(Image = 1, arena = 2, location = 3,
          team = 4, capacity = 5, opened = 6,
          season_one = 7, refs = 8) |>
-  select(arena, team)
+  select(arena, team) |>
+  mutate(arena = str_replace(arena, " ", "_"),
+         arena = str_replace(arena, " ", "_"))
 
 # test scrape coordinates
 coord <- read_html("https://en.wikipedia.org/wiki/PPG_Paints_Arena")
@@ -67,4 +69,7 @@ for(i in 1:32) {
   coordinates[i,3] <- arena[[1]][i]
 }
 
+# join two dfs
+locations <- location_tbl |>
+  full_join(coordinates)
 ```
