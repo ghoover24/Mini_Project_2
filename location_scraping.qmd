@@ -77,7 +77,18 @@ locations <- location_tbl |>
 ```
 
 ```{r}
-locations |>
-  mutate(latitude = str_replace(latitude, "[\\D]", "."))
+fix_lat_long <- function(x) {
+  degree  <- as.numeric(str_extract(x, "^[0-9.]+"))
+  minutes <- as.numeric(str_extract(x, "[0-9.]+(?=′)"))
+  seconds <- as.numeric(str_extract(x, "[0-9.]+(?=″)"))
+  decimal <- degree + minutes/60 + seconds/3600
+  return(decimal)
+}
+
+locations_clean <- locations |>
+  mutate(
+    latitude = sapply(latitude, fix_lat_long),
+    longitude = sapply(longitude, fix_lat_long),
+    longitude = as.numeric(str_c("-",longitude)))
 ```
 
