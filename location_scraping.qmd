@@ -86,8 +86,7 @@ fix_lat_long <- function(x) {
 }
 
 locations_clean <- locations |>
-  mutate(
-    latitude = sapply(latitude, fix_lat_long),
+  mutate(latitude = sapply(latitude, fix_lat_long),
     longitude = sapply(longitude, fix_lat_long),
     longitude = as.numeric(str_c("-",longitude)))
 ```
