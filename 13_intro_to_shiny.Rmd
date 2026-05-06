@@ -1,0 +1,103 @@
+---
+title: "13_intro_to_shiny"
+output: html_document
+date: "2026-04-21"
+runtime: shiny
+---
+
+```{r}
+library(shiny)
+library(tidyverse)
+```
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+This R Markdown document is made interactive using Shiny. Unlike the more traditional workflow of creating static reports, you can now create documents that allow your readers to change the assumptions underlying your analysis and see the results immediately. 
+
+To learn more, see [Interactive Documents](http://rmarkdown.rstudio.com/authoring_shiny.html).
+
+## Inputs and Outputs
+
+You can embed Shiny inputs and outputs in your document. Outputs are automatically updated whenever inputs change.  This demonstrates how a standard R plot can be made interactive by wrapping it in the Shiny `renderPlot` function. The `selectInput` and `sliderInput` functions create the input widgets used to drive the plot.
+
+```{r eruptions, echo=FALSE}
+inputPanel(
+  selectInput("n_breaks", label = "Number of bins:",
+              choices = c(10, 20, 35, 50), selected = 20),
+  
+  sliderInput("bw_adjust", label = "Bandwidth adjustment:",
+              min = 0.2, max = 2, value = 1, step = 0.2)
+)
+
+renderPlot({
+  hist(faithful$eruptions, probability = TRUE, breaks = as.numeric(input$n_breaks),
+       xlab = "Duration (minutes)", main = "Geyser eruption duration")
+  
+  dens <- density(faithful$eruptions, adjust = input$bw_adjust)
+  lines(dens, col = "blue")
+})
+```
+
+## Embedded Application
+
+It's also possible to embed an entire Shiny application within an R Markdown document using the `shinyAppDir` function. This example embeds a Shiny application located in another directory:
+
+```{r tabsets, echo=FALSE}
+shinyAppDir(
+  system.file("examples/06_tabsets", package = "shiny"),
+  options = list(
+    width = "100%", height = 550
+  )
+)
+```
+
+Note the use of the `height` parameter to determine how much vertical space the embedded application should occupy.
+
+You can also use the `shinyApp` function to define an application inline rather then in an external directory.
+
+In all of R code chunks above the `echo = FALSE` attribute is used. This is to prevent the R code within the chunk from rendering in the document alongside the Shiny components.
+
+Group exercise I:
+Create a second interactive histogram which recreates the 1st histogram (old faithful eruption) as closely as possible using ggplot.
+
+Hint 1: write ggplot code that works, and then “shiny-ize” it
+
+Hint 2: Use aes(y = after_stat(density)) in the histogram to make histogram and density use same y-axis.
+
+Hint 3: Give your input variables different names than in the first histogram.
+
+Modify the input panel choices for number of bins and bandwidth. Also change the default/starting input for both bins and bandwidth.
+
+```{r, echo=FALSE}
+inputPanel(
+  selectInput("num_breaks", label = "Number of bins:",
+              choices = c(10, 20, 35, 50), selected = 20),
+  
+  sliderInput("band_adjust", label = "Bandwidth adjustment:",
+              min = 0.2, max = 2, value = 1, step = 0.2)
+)
+
+renderPlot({
+ggplot(faithful, aes(x = eruptions, y = after_stat(density))) +
+  geom_histogram(bins = as.numeric(input$num_breaks)) +
+  geom_density(color = "blue", adjust = input$band_adjust) +
+  labs(title = "Geyser eruption duration", x = "Duration (minutes)", y = "density")
+})
+```
+
+Part 2:
+See how a few more input features can be used in AER_Shiny.Rmd, which uses the medical expenditure data set NMES1988
+
+Save this file, then hit “Run Document” to see a few new features (note that you can’t simply run individual R chunks in an Rmd meant to produce a Shiny app)
+
+Note how a Yes/No check box can be integrated with if and else if
+
+Note how user-input variables for ggplot attributes can be integrated with .data[[.]]. In some of the sample code from past projects, you may see aes_string() used instead of .data[[.]]. aes_string() still works, but it was recently deprecated so it will no longer be supported in the tidyverse.
+
+```{r}
+
+```
+
