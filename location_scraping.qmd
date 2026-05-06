@@ -75,3 +75,9 @@ locations <- location_tbl |>
   mutate(arena = str_replace(arena, "_", " "),
          arena = str_replace(arena, "_", " "))
 ```
+
+```{r}
+locations |>
+  mutate(latitude = str_replace(latitude, "[\\D]", "."))
+```
+
