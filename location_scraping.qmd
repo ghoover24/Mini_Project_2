@@ -74,9 +74,8 @@ locations <- location_tbl |>
   full_join(coordinates) |>
   mutate(arena = str_replace(arena, "_", " "),
          arena = str_replace(arena, "_", " "))
-```
 
-```{r}
+# clean latitude and longitude for map
 fix_lat_long <- function(x) {
   degree  <- as.numeric(str_extract(x, "^[0-9.]+"))
   minutes <- as.numeric(str_extract(x, "[0-9.]+(?=′)"))
@@ -89,5 +88,19 @@ locations_clean <- locations |>
   mutate(latitude = sapply(latitude, fix_lat_long),
     longitude = sapply(longitude, fix_lat_long),
     longitude = as.numeric(str_c("-",longitude)))
+
+# Join locations to NHL data
+locations_clean <- locations_clean |>
+  rename(Team = team)
+
+nhl_full_years <- nhl_full_years |>
+  filter(season == 2026) |>
+  mutate(Team = str_replace(Team, "\\*", ""),
+         W_PCT = (as.numeric(W) / as.numeric(GP)) * 100,
+         W_PCT = round(W_PCT, 2),
+         W_PCT_map = (as.numeric(W) / as.numeric(GP)) * 30,
+         popup = str_c(arena, ", the ", Team, " have a win percentage of ", W_PCT, "%")) |>
+  full_join(locations_clean) 
 ```
+
 
