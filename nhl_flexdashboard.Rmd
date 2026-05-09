@@ -52,7 +52,6 @@ nhl_full_years <- nhl_full_years |>
          RgPT_PCT = `RgPt%`) |>
   mutate(across(GP:RW, as.numeric),
          RgPT_PCT = as.numeric(RgPT_PCT),
-         season = as.factor(season),
          Team = str_replace(Team, "\\*", ""),
          W_PCT = (W / GP),
          W_PCT = round(W_PCT, 4))
@@ -146,15 +145,17 @@ nhl_map <- nhl_full_years |>
 
 Line Plot
 ==========
-### need to add lines but idk
+
 ```{r line plot, echo=FALSE}
 inputPanel(
-  selectInput("chosen_stat", label = "Chosen Statistic:",
+  selectInput("chosen_stat", label = "Chose a Statistic:",
               choices = c("Number of Wins" = "W", 
                           "Number of Losses" = "L",
                           "Win Percentage" = "W_PCT",
                           "Points" = "PTS",
-                          "Points Percentage" = "PTS_PCT"))
+                          "Points Percentage" = "PTS_PCT")),
+  selectInput("chosen_team", label = "Chose Teams:",
+              choices = c(nhl_full_years$Team))
 )
 
 renderPlot(
@@ -162,7 +163,7 @@ renderPlot(
     filter(Team %in% c("Minnesota Wild", "St. Louis Blues")) |>
     ggplot(aes(x = season, y = .data[[input$chosen_stat]], color = Team)) +
     geom_point() +
-    geom_smooth(method = loess)
+    geom_smooth()
 )
 ```
 
@@ -190,7 +191,7 @@ leaflet() |>
         color = "grey",
         fillColor = ~pal(W_PCT),
         fillOpacity = 1) # |>
-#  addLegend(pal = ~pal, values = ~ WCT_PCT, opacity = 0.7, title = NULL,
+# addLegend(map, pal = ~pal, values = ~ WCT_PCT, opacity = 0.7, title = NULL,
 #    position = "bottomright")
 # addLegend not working :(
 ```
