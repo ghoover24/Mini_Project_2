@@ -15,6 +15,7 @@ library(purrr)
 library(httr2)
 library(httr)
 library(leaflet)
+library(shiny)
 ```
 
 ```{r setup nhl data set, include=FALSE}
@@ -44,6 +45,11 @@ scrape <- function(x) {
   full_standings
 }
 
+nhl_conferences <- data.frame(
+  Team = c("Boston Bruins", "Buffalo Sabres", "Detroit Red Wings", "Florida Panthers", "Montreal Canadiens", "Ottawa Senators", "Tampa Bay Lightning", "Toronto Maple Leafs","Carolina Hurricanes", "Columbus Blue Jackets", "New Jersey Devils", "New York Islanders", "New York Rangers", "Philadelphia Flyers", "Pittsburgh Penguins", "Washington Capitals", "Chicago Blackhawks", "Colorado Avalanche", "Dallas Stars", "Minnesota Wild", "Nashville Predators", "St. Louis Blues", "Utah Mammoth", "Winnipeg Jets", "Anaheim Ducks", "Calgary Flames", "Edmonton Oilers", "Los Angeles Kings", "San Jose Sharks", "Seattle Kraken", "Vancouver Canucks", "Vegas Golden Knights"),
+  conference = c(rep("Eastern", 16), rep("Western", 16)),
+  division = c(rep("Atlantic", 8), rep("Metropolitan", 8), rep("Central", 8), rep("Pacific", 8)))
+
 nhl_full_years <- map_df(2022:2026, scrape)
 
 nhl_full_years <- nhl_full_years |>
@@ -55,6 +61,9 @@ nhl_full_years <- nhl_full_years |>
          Team = str_replace(Team, "\\*", ""),
          W_PCT = (W / GP),
          W_PCT = round(W_PCT, 4))
+
+nhl_all <- nhl_full_years |>
+  left_join(nhl_conferences)
 ```
 
 ```{r location data, include=FALSE}
@@ -194,6 +203,28 @@ leaflet() |>
 # addLegend(map, pal = ~pal, values = ~ WCT_PCT, opacity = 0.7, title = NULL,
 #    position = "bottomright")
 # addLegend not working :(
+```
+
+## SRS vs. Winning Percentage
+
+```{r}
+nhl_full_years |> 
+  ggplot(aes(x = W_PCT, y = SRS)) + 
+  geom_point() +
+  geom_smooth(method = lm) +
+  facet_wrap(~season) +
+  labs(y = "Simple Rating System (SRS)", x = "Winning Percentage")
+```
+
+## Density Plot of NHL Conferences
+
+```{r}
+nhl_all |>
+  filter(!is.na(conference)) |>
+  ggplot(aes(x = W_PCT, color = division, fill = division)) +
+  geom_density(bw = "nrd0", alpha = 0.4) +
+  facet_wrap(~season) +
+  labs(x = "Winnning Percentage", y = "Density")
 ```
 
 
