@@ -181,7 +181,7 @@ renderPlot(
 
 Map
 ====
-## Current NHL Teams and Their Win Percentage
+### Current NHL Teams and Their Win Percentage
 ### need to add legend but i can't figure it out rn :(
 ```{r map, echo=FALSE}
 nhl_map_26 <- nhl_map |>
@@ -207,7 +207,8 @@ leaflet() |>
 # addLegend not working :(
 ```
 
-## SRS vs. Winning Percentage
+SRS vs. Winning Percentage
+===========================
 
 ```{r, echo=FALSE, message=FALSE}
 nhl_full_years |> 
@@ -218,7 +219,26 @@ nhl_full_years |>
   labs(y = "Simple Rating System (SRS)", x = "Winning Percentage")
 ```
 
-## Density Plot of NHL Conferences
+### use something for hovering names of teams?
+
+```{r SRS plot, echo=FALSE}
+inputPanel(
+  selectInput("year", label = "Chose a Season:",
+              choices = c(2022, 2023, 2024, 2025, 2026))
+)
+
+renderPlot(
+  nhl_full_years |> 
+    filter(season == input$year) |>
+    ggplot(aes(x = W_PCT, y = SRS)) + 
+    geom_point() +
+    geom_smooth(method = lm, se = FALSE) +
+    labs(y = "Simple Rating System (SRS)", x = "Winning Percentage")
+)
+```
+
+Density Plot of NHL Conferences
+===============================
 
 ```{r, echo = FALSE}
 nhl_all |>
@@ -230,4 +250,18 @@ nhl_all |>
 ```
 
 
+```{r density plot, echo=FALSE}
+inputPanel(
+  selectInput("year", label = "Chose a Season:",
+              choices = c(2022, 2023, 2024, 2025, 2026))
+)
 
+renderPlot(
+  nhl_all |>
+    filter(!is.na(conference), 
+           season == input$year) |>
+    ggplot(aes(x = W_PCT, color = division, fill = division)) +
+    geom_density(bw = "nrd0", alpha = 0.4) +
+    labs(x = "Winnning Percentage", y = "Density")
+)
+```
