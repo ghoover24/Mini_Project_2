@@ -1,6 +1,5 @@
 ---
 title: "NHL Flexdashboard"
-date: "2026-05-08"
 output: html_document
 runtime: shiny
 ---
