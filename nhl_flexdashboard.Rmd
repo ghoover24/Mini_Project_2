@@ -155,7 +155,7 @@ nhl_map <- nhl_full_years |>
 
 Line Plot
 ==========
-
+### update labs
 ```{r line plot, echo=FALSE}
 inputPanel(
   selectInput("chosen_stat", label = "Chose a Statistic:",
@@ -174,7 +174,9 @@ renderPlot(
     filter(Team %in% input$chosen_team) |>
     ggplot(aes(x = season, y = .data[[input$chosen_stat]], color = Team)) +
     geom_point() +
-    geom_smooth()
+    geom_smooth() +
+    labs(x = "Season",
+         y = "Chosen Statistic")
 )
 ```
 
