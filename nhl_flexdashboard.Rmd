@@ -15,6 +15,7 @@ library(httr2)
 library(httr)
 library(leaflet)
 library(shiny)
+library(ggiraph)
 ```
 
 ```{r setup nhl data set, include=FALSE}
@@ -158,14 +159,14 @@ Line Plot
 ### update labs
 ```{r line plot, echo=FALSE}
 inputPanel(
-  selectInput("chosen_stat", label = "Chose a Statistic:",
+  selectInput("chosen_stat", label = "Choose a Statistic:",
               choices = c("Number of Wins" = "W", 
                           "Number of Losses" = "L",
                           "Win Percentage" = "W_PCT",
                           "Points" = "PTS",
                           "Goals For" = "GF",
                           "Goals Against" = "GA")),
-  selectInput("chosen_team", label = "Chose Teams:",
+  selectInput("chosen_team", label = "Choose Teams:",
               choices = c(nhl_all$Team), selected = c("Minnesota Wild", "Colorado Avalanche", "Dallas Stars"), multiple = TRUE)
 )
 
@@ -213,27 +214,32 @@ SRS vs. Winning Percentage
 ===========================
 
 ```{r, echo=FALSE, message=FALSE}
-nhl_full_years |> 
-  ggplot(aes(x = W_PCT, y = SRS)) + 
-  geom_point() +
-  geom_smooth(method = lm, se = FALSE) +
-  facet_wrap(~season) +
-  labs(y = "Simple Rating System (SRS)", x = "Winning Percentage")
+SRS_plot <- nhl_all |> 
+    filter(!is.na(conference)) |>
+    ggplot(aes(x = W_PCT, y = SRS)) + 
+    geom_point_interactive(aes(color = division,
+                           tooltip = Team,
+                           data_id = Team,
+                           hover_nearest = TRUE)) +
+    geom_smooth(method = lm, se = FALSE) +
+    labs(y = "Simple Rating System (SRS)", x = "Winning Percentage")
+
+girafe(ggobj = SRS_plot)
 ```
 
-### use something for hovering names of teams?
+### Select teams
 
 ```{r SRS plot, echo=FALSE}
 inputPanel(
-  selectInput("year", label = "Chose a Season:",
-              choices = c(2022, 2023, 2024, 2025, 2026))
-)
+  selectInput("team_select", label = "Choose a team:",
+              choices = c(nhl_all$Team), selected = c("Minnesota Wild")
+))
 
 renderPlot(
-  nhl_full_years |> 
-    filter(season == input$year) |>
+nhl_all |> 
+    mutate(selected = Team == input$team_select) |>
     ggplot(aes(x = W_PCT, y = SRS)) + 
-    geom_point() +
+    geom_point(aes(color = selected, size = selected), show.legend = FALSE) +
     geom_smooth(method = lm, se = FALSE) +
     labs(y = "Simple Rating System (SRS)", x = "Winning Percentage")
 )
