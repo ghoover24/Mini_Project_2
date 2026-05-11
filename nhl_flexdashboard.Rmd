@@ -8,7 +8,6 @@ runtime: shiny
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
-library(viridis)
 library(rvest)
 library(polite)
 library(purrr)
@@ -45,6 +44,7 @@ scrape <- function(x) {
   full_standings
 }
 
+# Create df to sort conference and divisions
 nhl_conferences <- data.frame(
   Team = c("Boston Bruins", "Buffalo Sabres", "Detroit Red Wings", "Florida Panthers", "Montreal Canadiens", "Ottawa Senators", "Tampa Bay Lightning", "Toronto Maple Leafs","Carolina Hurricanes", "Columbus Blue Jackets", "New Jersey Devils", "New York Islanders", "New York Rangers", "Philadelphia Flyers", "Pittsburgh Penguins", "Washington Capitals", "Chicago Blackhawks", "Colorado Avalanche", "Dallas Stars", "Minnesota Wild", "Nashville Predators", "St. Louis Blues", "Utah Mammoth", "Winnipeg Jets", "Anaheim Ducks", "Calgary Flames", "Edmonton Oilers", "Los Angeles Kings", "San Jose Sharks", "Seattle Kraken", "Vancouver Canucks", "Vegas Golden Knights"),
   conference = c(rep("Eastern", 16), rep("Western", 16)),
@@ -52,6 +52,7 @@ nhl_conferences <- data.frame(
 
 nhl_full_years <- map_df(2022:2026, scrape)
 
+# clean names and levels
 nhl_full_years <- nhl_full_years |>
   rename(PTS_PCT = `PTS%`,
          RPt_PCT = `RPt%`,
@@ -59,11 +60,11 @@ nhl_full_years <- nhl_full_years |>
   mutate(across(GP:RW, as.numeric),
          RgPT_PCT = as.numeric(RgPT_PCT),
          Team = str_replace(Team, "\\*", ""),
-         W_PCT = (W / GP),
+         W_PCT = (W / GP),          # create new vars
          W_PCT = round(W_PCT, 4))
 
 nhl_all <- nhl_full_years |>
-  left_join(nhl_conferences)
+  left_join(nhl_conferences) # add conferences and divisions
 ```
 
 ```{r location data, include=FALSE}
@@ -162,14 +163,15 @@ inputPanel(
                           "Number of Losses" = "L",
                           "Win Percentage" = "W_PCT",
                           "Points" = "PTS",
-                          "Points Percentage" = "PTS_PCT")),
+                          "Goals For" = "GF",
+                          "Goals Against" = "GA")),
   selectInput("chosen_team", label = "Chose Teams:",
-              choices = c(nhl_full_years$Team))
+              choices = c(nhl_all$Team), selected = c("Minnesota Wild", "Colorado Avalanche", "Dallas Stars"), multiple = TRUE)
 )
 
 renderPlot(
-  nhl_full_years |>
-    filter(Team %in% c("Minnesota Wild", "St. Louis Blues")) |>
+  nhl_all |>
+    filter(Team %in% input$chosen_team) |>
     ggplot(aes(x = season, y = .data[[input$chosen_stat]], color = Team)) +
     geom_point() +
     geom_smooth()
@@ -207,18 +209,18 @@ leaflet() |>
 
 ## SRS vs. Winning Percentage
 
-```{r}
+```{r, echo=FALSE, message=FALSE}
 nhl_full_years |> 
   ggplot(aes(x = W_PCT, y = SRS)) + 
   geom_point() +
-  geom_smooth(method = lm) +
+  geom_smooth(method = lm, se = FALSE) +
   facet_wrap(~season) +
   labs(y = "Simple Rating System (SRS)", x = "Winning Percentage")
 ```
 
 ## Density Plot of NHL Conferences
 
-```{r}
+```{r, echo = FALSE}
 nhl_all |>
   filter(!is.na(conference)) |>
   ggplot(aes(x = W_PCT, color = division, fill = division)) +
