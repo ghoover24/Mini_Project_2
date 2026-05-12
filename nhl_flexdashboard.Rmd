@@ -1,5 +1,6 @@
 ---
 title: "NHL Flexdashboard"
+date: "2026-05-08"
 output: html_document
 runtime: shiny
 ---
@@ -177,8 +178,7 @@ renderPlot(
     geom_smooth() +
     labs(x = "Season",
          y = "Chosen Statistic")
-) +
-  theme_minimal()
+)
 ```
 
 
