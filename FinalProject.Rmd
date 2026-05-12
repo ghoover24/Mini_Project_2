@@ -28,8 +28,19 @@ About
 Column {data-width=600}
 -------------------------------------
 
-Introduction
+Given the increased data availability and growing popularity of the National Hockey League (NHL), this project analyzes the league’s 32 hockey teams, with data dating back to 2022. With these statistics, we hope to answer key questions:
 
+- How have teams’ success, measured in winning percentages, shifted through the years?
+
+- Which conferences are the most challenging to compete in?
+
+- How much of a team’s success can be attributed to luck?
+
+Our data comes from Hockey Reference, a website that compiles hockey statistics for teams and players. In this project, we will focus on different ways of viewing a team’s success throughout time.
+
+Column {data-width=400}
+-------------------------------------
+(Image goes here)
 
 Team Success {data-orientation=rows}
 =====================================     
@@ -224,7 +235,12 @@ leaflet() |>
 Row
 -------------------------------------
 
-Words
+From the map you can see geographically where each teams’ home stadium resides. There is a general trend for many teams to be located near coasts with many gaps within the Midwest and Pacific Northwest. Most of the arenas are clustered in the Northeast region in small, densely populated states with larger hockey cultures.
+
+The gaps seen in the middle of the U.S. could be attributed to the smaller populations and lack of large cities in these states. These factors possibly limit the amount of fans who can reasonably attend home games, decreasing the profits that can be made off the team. This lower level of profit is most likely what sways the NHL to not invest in placing teams in these regions.
+
+It is also interesting to note that the Canadian teams are fairly close to the American border compared to the American teams. This trend could also be attributed to the amount of profits that can be made off of these teams. These teams are located in the most populated cities in Canada as most people living in Canada live in the southern region of the country. This leaves more people available to attend games at home for these teams. Being closer to the border is also beneficial as it leaves Americans in the northern U.S. able to attend away games without travelling too far. 
+
 
 
 Team Luck
