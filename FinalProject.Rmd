@@ -200,9 +200,6 @@ renderPlot(
 Map of Teams {data-orientation=rows}
 =====================================     
 
-Column {data-width=350}
------------------------------------------------------------------------
-
 ```{r, echo = FALSE}
 nhl_map_26 <- nhl_map |>
   filter(season == 2026)
@@ -227,8 +224,6 @@ leaflet() |>
 Team Luck {data-orientation=rows}
 =====================================   
 
-Column {data-width=350}
------------------------------------------------------------------------
 
 ```{r, echo = FALSE}
 inputPanel(
