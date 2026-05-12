@@ -177,7 +177,8 @@ renderPlot(
     geom_smooth() +
     labs(x = "Season",
          y = "Chosen Statistic")
-)
+) +
+  theme_minimal()
 ```
 
 
