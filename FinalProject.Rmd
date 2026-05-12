@@ -197,8 +197,11 @@ renderPlot(
 )
 ```
 
-Map of Teams {data-orientation=rows}
-=====================================     
+Map of Teams
+=====================================
+
+Row
+-------------------------------------
 
 ```{r, echo = FALSE}
 nhl_map_26 <- nhl_map |>
@@ -221,10 +224,17 @@ leaflet() |>
         fillOpacity = 1)
 ```
 
-Team Luck {data-orientation=rows}
+Row
+-------------------------------------
+
+Words
+
+
+Team Luck
 =====================================   
 
-
+Row
+-------------------------------------
 ```{r, echo = FALSE}
 inputPanel(
   selectInput("team_select", label = "Choose a team:",
@@ -240,4 +250,37 @@ nhl_all |>
     labs(y = "Simple Rating System (SRS)", x = "Winning Percentage")
 )
 ```
+
+Row
+-------------------------------------
+
+SRS measures skill!
+
+
+Conference Strength {data-orientation=rows}
+=====================================   
+
+Row
+-------------------------------------
+
+```{r density plot, echo=FALSE}
+inputPanel(
+  selectInput("year", label = "Chose a Season:",
+              choices = c(2022, 2023, 2024, 2025, 2026))
+)
+
+renderPlot(
+  nhl_all |>
+    filter(!is.na(conference), 
+           season == input$year) |>
+    ggplot(aes(x = W_PCT, color = division, fill = division)) +
+    geom_density(bw = "nrd0", alpha = 0.4) +
+    labs(x = "Winnning Percentage", y = "Density")
+)
+```
+
+Row
+-------------------------------------
+
+Stuff
 
