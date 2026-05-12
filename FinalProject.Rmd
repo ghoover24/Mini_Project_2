@@ -206,12 +206,16 @@ renderPlot(
     geom_point() +
     geom_smooth() +
     labs(x = "Season",
-         y = "Chosen Statistic")
+         y = "Chosen Statistic") +
+    theme_classic()
 )
 ```
 
 Map of Teams
 =====================================
+
+Column
+-------------------------------------
 
 ```{r, echo = FALSE}
 nhl_map_26 <- nhl_map |>
@@ -234,8 +238,10 @@ leaflet() |>
         fillOpacity = 1)
 ```
 
-Row
+Column
 -------------------------------------
+
+***Commentary***
 
 From the map you can see geographically where each teams’ home stadium resides. There is a general trend for many teams to be located near coasts with many gaps within the Midwest and Pacific Northwest. Most of the arenas are clustered in the Northeast region in small, densely populated states with larger hockey cultures.
 
@@ -263,7 +269,8 @@ nhl_all |>
     ggplot(aes(x = W_PCT, y = SRS)) + 
     geom_point(aes(color = selected, size = selected), show.legend = FALSE) +
     geom_smooth(method = lm, se = FALSE) +
-    labs(y = "Simple Rating System (SRS)", x = "Winning Percentage")
+    labs(y = "Simple Rating System (SRS)", x = "Winning Percentage") +
+    theme_classic()
 )
 ```
 
@@ -291,7 +298,8 @@ renderPlot(
            season == input$year) |>
     ggplot(aes(x = W_PCT, color = division, fill = division)) +
     geom_density(bw = "nrd0", alpha = 0.4) +
-    labs(x = "Winnning Percentage", y = "Density")
+    labs(x = "Winnning Percentage", y = "Density") +
+    theme_classic()
 )
 ```
 
