@@ -21,7 +21,7 @@ library(shiny)
 library(ggiraph)
 ```
 
-Home
+About
 =====================================  
 
     
@@ -200,9 +200,6 @@ renderPlot(
 Map of Teams
 =====================================
 
-Row
--------------------------------------
-
 ```{r, echo = FALSE}
 nhl_map_26 <- nhl_map |>
   filter(season == 2026)
@@ -235,6 +232,7 @@ Team Luck
 
 Row
 -------------------------------------
+
 ```{r, echo = FALSE}
 inputPanel(
   selectInput("team_select", label = "Choose a team:",
