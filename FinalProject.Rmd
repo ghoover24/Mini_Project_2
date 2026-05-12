@@ -30,7 +30,8 @@ Column {data-width=600}
 
 Introduction
 
-Charts {data-orientation=rows}
+
+Team Success {data-orientation=rows}
 =====================================     
 
 Column {data-width=650}
@@ -172,8 +173,6 @@ nhl_map <- nhl_full_years |>
          popup = str_c(arena, ": the ", Team, " have a win percentage of ", W_PCT, "%")) 
 ```
 
-### Chart A
-
 ```{r, echo=FALSE}
 inputPanel(
   selectInput("chosen_stat", label = "Choose a Statistic:",
@@ -198,10 +197,11 @@ renderPlot(
 )
 ```
 
+Map of Teams {data-orientation=rows}
+=====================================     
+
 Column {data-width=350}
 -----------------------------------------------------------------------
-
-### Chart B
 
 ```{r, echo = FALSE}
 nhl_map_26 <- nhl_map |>
@@ -224,9 +224,11 @@ leaflet() |>
         fillOpacity = 1)
 ```
 
------------------------------------------------------------------------
+Team Luck {data-orientation=rows}
+=====================================   
 
-### Chart C
+Column {data-width=350}
+-----------------------------------------------------------------------
 
 ```{r, echo = FALSE}
 inputPanel(
