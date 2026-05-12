@@ -1,5 +1,5 @@
 ---
-title: "Flex Dashboard"
+title: "NHL Statistics"
 output: 
   flexdashboard::flex_dashboard:
     orientation: columns
@@ -36,7 +36,9 @@ Given the increased data availability and growing popularity of the National Hoc
 
 - How much of a team’s success can be attributed to luck?
 
-Our data comes from Hockey Reference, a website that compiles hockey statistics for teams and players. In this project, we will focus on different ways of viewing a team’s success throughout time.
+Our data comes from [Hockey Reference](https://www.hockey-reference.com/leagues/NHL_2026.html), a website that compiles hockey statistics for teams and players. In this project, we will focus on different ways of viewing a team’s success throughout time.
+
+Source code for this dashboard can be found [here](https://github.com/ghoover24/Mini_Project_2).
 
 Column {data-width=400}
 -------------------------------------
