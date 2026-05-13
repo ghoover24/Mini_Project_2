@@ -250,6 +250,36 @@ The gaps seen in the middle of the U.S. could be attributed to the smaller popul
 
 It is also interesting to note that the Canadian teams are fairly close to the American border compared to the American teams. This trend could also be attributed to the amount of profits that can be made off of these teams. These teams are located in the most populated cities in Canada as most people living in Canada live in the southern region of the country. This leaves more people available to attend games at home for these teams. Being closer to the border is also beneficial as it leaves Americans in the northern U.S. able to attend away games without travelling too far. 
 
+Conference Strength
+=====================================   
+
+Column
+-------------------------------------
+
+```{r density plot, echo=FALSE}
+inputPanel(
+  selectInput("year", label = "Chose a Season:",
+              choices = c(2022, 2023, 2024, 2025, 2026))
+)
+
+renderPlot(
+  nhl_all |>
+    rename(Division = division) |>
+    filter(!is.na(conference), 
+           season == input$year) |>
+    ggplot(aes(x = W_PCT, color = Division, fill = Division)) +
+    geom_density(bw = "nrd0", alpha = 0.4) +
+    labs(x = "Winnning Percentage", y = "Density") +
+    theme_classic()
+)
+```
+
+Column
+-------------------------------------
+
+In the NHL, intradivisional games are frequent between teams. Due to differences in teams’ skill levels within the divisions, a certain division may be more difficult than another. These variations in ability create a reality that teams of a certain division may experience greater competitive challenges than the team of another division. Sports statisticians describe this phenomenon as “strength of schedule.”
+
+This density plot shows the differences between the divisions through the past five NHL seasons. Generally speaking, the central division experienced a lot of success from 2022 through 2024, which means that the average team would be less likely to succeed in that division during that time frame. However, the central division appears to have tailed off slightly in 2026, with a distribution of winning percentages centered below .500.
 
 
 Team Luck
@@ -284,35 +314,3 @@ In this scatterplot, we ran a linear regression between SRS and winning percenta
 
 Insights into the true skill of a team is valuable because it allows front offices and fans to create stronger expectations for their future performance. If a team is winning more games than expected, fans and analysts may set their expectations lower to match what the team is expected to do. 
 
-
-
-Conference Strength
-=====================================   
-
-Column
--------------------------------------
-
-```{r density plot, echo=FALSE}
-inputPanel(
-  selectInput("year", label = "Chose a Season:",
-              choices = c(2022, 2023, 2024, 2025, 2026))
-)
-
-renderPlot(
-  nhl_all |>
-    rename(Division = division) |>
-    filter(!is.na(conference), 
-           season == input$year) |>
-    ggplot(aes(x = W_PCT, color = Division, fill = Division)) +
-    geom_density(bw = "nrd0", alpha = 0.4) +
-    labs(x = "Winnning Percentage", y = "Density") +
-    theme_classic()
-)
-```
-
-Column
--------------------------------------
-
-In the NHL, intradivisional games are frequent between teams. Due to differences in teams’ skill levels within the divisions, a certain division may be more difficult than another. These variations in ability create a reality that teams of a certain division may experience greater competitive challenges than the team of another division. Sports statisticians describe this phenomenon as “strength of schedule.”
-
-This density plot shows the differences between the divisions through the past five NHL seasons. Generally speaking, the central division experienced a lot of success from 2022 through 2024, which means that the average team would be less likely to succeed in that division during that time frame. However, the central division appears to have tailed off slightly in 2026, with a distribution of winning percentages centered below .500.
