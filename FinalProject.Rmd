@@ -48,23 +48,19 @@ Column {data-width=400}
 -------------------------------------
 (Image goes here)
 
-Team Success {data-orientation=rows}
-=====================================     
-
-Row
------------------------------------------------------------------------
 
 ```{r setup nhl data set, include=FALSE}
 robotstxt::paths_allowed("https://www.hockey-reference.com/leagues/NHL_2026.html")
 
-#Step One
+# Step One: scraping hockey website
 nhl <- read_html("https://www.hockey-reference.com/leagues/NHL_2026.html")
 str(nhl)
 
-#Step Two
+# Step Two: scraping tables from hockey website
 table <- html_nodes(nhl, css = "table")
 untidy_tables <- html_table(table, header = TRUE, fill = TRUE)
 
+# function fro scraping multiple seasons
 scrape <- function(x) {
   url <- read_html(str_c("https://www.hockey-reference.com/leagues/NHL_", x, ".html")) 
   table <- html_nodes(url, css = "table")
@@ -81,17 +77,11 @@ scrape <- function(x) {
   full_standings
 }
 
-# Create df to sort conference and divisions
-nhl_conferences <- data.frame(
-  Team = c("Boston Bruins", "Buffalo Sabres", "Detroit Red Wings", "Florida Panthers", "Montreal Canadiens", "Ottawa Senators", "Tampa Bay Lightning", "Toronto Maple Leafs","Carolina Hurricanes", "Columbus Blue Jackets", "New Jersey Devils", "New York Islanders", "New York Rangers", "Philadelphia Flyers", "Pittsburgh Penguins", "Washington Capitals", "Chicago Blackhawks", "Colorado Avalanche", "Dallas Stars", "Minnesota Wild", "Nashville Predators", "St. Louis Blues", "Utah Mammoth", "Winnipeg Jets", "Anaheim Ducks", "Calgary Flames", "Edmonton Oilers", "Los Angeles Kings", "San Jose Sharks", "Seattle Kraken", "Vancouver Canucks", "Vegas Golden Knights"),
-  conference = c(rep("Eastern", 16), rep("Western", 16)),
-  division = c(rep("Atlantic", 8), rep("Metropolitan", 8), rep("Central", 8), rep("Pacific", 8)))
-
 nhl_full_years <- map_df(2022:2026, scrape)
 
 # clean names and levels
 nhl_full_years <- nhl_full_years |>
-  rename(PTS_PCT = `PTS%`,
+  rename(PTS_PCT = `PTS%`,             # make tidy
          RPt_PCT = `RPt%`,
          RgPT_PCT = `RgPt%`) |>
   mutate(across(GP:RW, as.numeric),
@@ -100,6 +90,14 @@ nhl_full_years <- nhl_full_years |>
          W_PCT = (W / GP),          # create new vars
          W_PCT = round(W_PCT, 4))
 
+# Create df to sort conference and divisions
+nhl_conferences <- data.frame(
+  Team = c("Boston Bruins", "Buffalo Sabres", "Detroit Red Wings", "Florida Panthers", "Montreal Canadiens", "Ottawa Senators", "Tampa Bay Lightning", "Toronto Maple Leafs","Carolina Hurricanes", "Columbus Blue Jackets", "New Jersey Devils", "New York Islanders", "New York Rangers", "Philadelphia Flyers", "Pittsburgh Penguins", "Washington Capitals", "Chicago Blackhawks", "Colorado Avalanche", "Dallas Stars", "Minnesota Wild", "Nashville Predators", "St. Louis Blues", "Utah Mammoth", "Winnipeg Jets", "Anaheim Ducks", "Calgary Flames", "Edmonton Oilers", "Los Angeles Kings", "San Jose Sharks", "Seattle Kraken", "Vancouver Canucks", "Vegas Golden Knights"),
+  conference = c(rep("Eastern", 16), rep("Western", 16)),
+  division = c(rep("Atlantic", 8), rep("Metropolitan", 8), rep("Central", 8), rep("Pacific", 8)))
+
+
+# join dfs to include all necessary variables
 nhl_all <- nhl_full_years |>
   left_join(nhl_conferences) # add conferences and divisions
 ```
@@ -140,7 +138,7 @@ arenas_col <- location_tbl |>
          arena = str_replace(arena, " ", "_"))
 arena <-as.list(arenas_col)
 
-# for loop for coordinates
+# for loop for scraping coordinates
 coordinates <- tibble(latitude = character(), longitude = character(), arena = character())
 
 for(i in 1:32) {
@@ -167,8 +165,8 @@ locations <- location_tbl |>
 
 # clean latitude and longitude for map
 fix_lat_long <- function(x) {
-  degree  <- as.numeric(str_extract(x, "^[0-9.]+"))
-  minutes <- as.numeric(str_extract(x, "[0-9.]+(?=′)"))
+  degree  <- as.numeric(str_extract(x, "^[0-9.]+"))     # remove non digits
+  minutes <- as.numeric(str_extract(x, "[0-9.]+(?=′)")) 
   seconds <- as.numeric(str_extract(x, "[0-9.]+(?=″)"))
   decimal <- degree + minutes/60 + seconds/3600
   return(decimal)
@@ -179,46 +177,17 @@ locations_clean <- locations |>
     longitude = sapply(longitude, fix_lat_long),
     longitude = as.numeric(str_c("-",longitude)))
 
-# Join locations to NHL data
+# prepare locations data for joining to NHl data
 locations_clean <- locations_clean |> 
   rename(Team = team)                 # match variable name
 
-nhl_map <- nhl_full_years |>
+# create specific df for leaflet map
+nhl_map <- nhl_all |>
   full_join(locations_clean) |>
     mutate(W_PCT = W_PCT * 100,
          W_PCT_map_size = (as.numeric(W) / as.numeric(GP)) * 30,
          popup = str_c(arena, ": the ", Team, " have a win percentage of ", W_PCT, "%")) 
 ```
-
-```{r, echo=FALSE}
-inputPanel(
-  selectInput("chosen_stat", label = "Choose a Statistic:",
-              choices = c("Number of Wins" = "W", 
-                          "Number of Losses" = "L",
-                          "Win Percentage" = "W_PCT",
-                          "Points" = "PTS",
-                          "Goals For" = "GF",
-                          "Goals Against" = "GA")),
-  selectInput("chosen_team", label = "Choose Teams:",
-              choices = c(nhl_all$Team), selected = c("Minnesota Wild", "Colorado Avalanche", "Dallas Stars"), multiple = TRUE)
-)
-
-renderPlot(
-  nhl_all |>
-    filter(Team %in% input$chosen_team) |>
-    ggplot(aes(x = season, y = .data[[input$chosen_stat]], color = Team)) +
-    geom_point() +
-    geom_smooth() +
-    labs(x = "Season",
-         y = "Chosen Statistic") +
-    theme_classic()
-)
-```
-
-Row
------------------------------------------------------------------------
-
-Over the course of many seasons, each teams’ successes can drastically change due to many different factors. This plot allows you to see these trends over the past five seasons and compare them across teams. For example, in the default settings, you can see how the total number of games three teams have won since the 2021-2022 season. In the previous three seasons, the Colorado Avalanche’s wins have remained relatively steady and increased by five games for the most recent season (2025-2026). The Dallas Stars have also had a stable number of wins across seasons. The Minnesota Wild is seen to have a fluctuating number of wins with a dramatic decrease from the 2021-2022 season to the 2023-2024 season. However, the Wild are on a general incline in wins. 
 
 
 Map of Teams
@@ -231,20 +200,20 @@ Column
 nhl_map_26 <- nhl_map |>
   filter(season == 2026)
 
-bins <- c(0, 30, 40, 50, 60, 70, 80, 100)
-pal <- colorBin("YlOrRd", domain = nhl_map$W_PCT, bins = bins)
+bins <- c(0, 30, 40, 50, 60, 70, 80, 100)                      # for color/fill
+pal <- colorBin("YlOrRd", domain = nhl_map$W_PCT, bins = bins) # for color/fill
 
 leaflet() |>
   setView(-97, 40, 4) |>
   addTiles() |>
-  addCircleMarkers(data = nhl_map_26,
+  addCircleMarkers(data = nhl_map_26,  # circle markers for each team/arena
         lat = ~ latitude, 
         lng = ~ longitude,
         popup = ~ popup,
-        radius = ~ W_PCT_map_size,
+        radius = ~ W_PCT_map_size,     # larger circles for teams with higher win percentages
         weight = 4,
         color = "grey",
-        fillColor = ~pal(W_PCT),
+        fillColor = ~pal(W_PCT),       # darker red for teams with higher win percentages
         fillOpacity = 1)
 ```
 
@@ -256,6 +225,46 @@ From the map you can see geographically where each teams’ home stadium resides
 The gaps seen in the middle of the U.S. could be attributed to the smaller populations and lack of large cities in these states. These factors possibly limit the amount of fans who can reasonably attend home games, decreasing the profits that can be made off the team. This lower level of profit is most likely what sways the NHL to not invest in placing teams in these regions.
 
 It is also interesting to note that the Canadian teams are fairly close to the American border compared to the American teams. This trend could also be attributed to the amount of profits that can be made off of these teams. These teams are located in the most populated cities in Canada as most people living in Canada live in the southern region of the country. This leaves more people available to attend games at home for these teams. Being closer to the border is also beneficial as it leaves Americans in the northern U.S. able to attend away games without travelling too far. 
+
+
+
+Team Success {data-orientation=rows}
+=====================================     
+
+Row
+-----------------------------------------------------------------------
+
+```{r, echo=FALSE}
+inputPanel(
+  selectInput("chosen_stat", label = "Choose a Statistic:", # users can choose a statistic for line graph
+              choices = c("Number of Wins" = "W",           # nicer names for selection
+                          "Number of Losses" = "L",
+                          "Win Percentage" = "W_PCT",
+                          "Points" = "PTS",
+                          "Goals For" = "GF",
+                          "Goals Against" = "GA")),
+  selectInput("chosen_team", label = "Choose Teams:",       # users can choose teams to compare
+              choices = c(nhl_all$Team), 
+              selected = c("Minnesota Wild", "Colorado Avalanche", "Dallas Stars"), multiple = TRUE) # allow multiple to be selected
+)
+
+renderPlot(
+  nhl_all |>
+    filter(Team %in% input$chosen_team) |> # filter teams to the selected teams
+    ggplot(aes(x = season, y = .data[[input$chosen_stat]], color = Team)) + # y-axis is chosen statistic
+    geom_point() + # each point represents a team at a specific season
+    geom_smooth() + 
+    labs(x = "Season",
+         y = "Chosen Statistic") +
+    theme_classic() # nice theme
+)
+```
+
+Row
+-----------------------------------------------------------------------
+
+Over the course of many seasons, each teams’ successes can drastically change due to many different factors. This plot allows you to see these trends over the past five seasons and compare them across teams. For example, in the default settings, you can see how the total number of games three teams have won since the 2021-2022 season. In the previous three seasons, the Colorado Avalanche’s wins have remained relatively steady and increased by five games for the most recent season (2025-2026). The Dallas Stars have also had a stable number of wins across seasons. The Minnesota Wild is seen to have a fluctuating number of wins with a dramatic decrease from the 2021-2022 season to the 2023-2024 season. However, the Wild are on a general incline in wins. 
+
 
 Conference Strength
 =====================================   
