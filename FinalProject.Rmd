@@ -34,7 +34,7 @@ Column {data-width=600}
 
 Given the increased data availability and growing popularity of the National Hockey League (NHL), this project analyzes the league’s 32 hockey teams, with data dating back to 2022. With these statistics, we hope to answer key questions:
 
-- How have teams’ success, measured in winning percentages, shifted through the years?
+- How have teams’ success, as measured through winning percentage, goals, and points, shifted through the years?
 
 - Which conferences are the most challenging to compete in?
 
@@ -380,5 +380,9 @@ The Simple Rating System (SRS) statistic attempts to quantify the true skill lev
 
 In this scatterplot, we ran a linear regression between SRS and winning percentage. With an R^2 value of .92, the regression found a very strong relationship between the variables. The linear regression line between the variables shows the expected winning percentage, given a team’s SRS score. Teams that win more than expected, based on their SRS score could be considered ‘lucky,’ according to the metric, while those who won fewer games than expected could be considered ‘unlucky.’
 
-Insights into the true skill of a team is valuable because it allows front offices and fans to create stronger expectations for their future performance. If a team is winning more games than expected, fans and analysts may set their expectations lower to match what the team is expected to do. 
+Insights into the true skill of a team is valuable because it allows front offices and fans to create stronger expectations for their future performance. If a team is winning more games than expected, fans and analysts may set their expectations lower to match what the team is expected to do. For example, through each of the past five seasons, the Minnesota Wild has sat either at or below expectations, meaning that their fans could expect their team to win slightly more games than they have been winning, assuming the team maintains its roster, continues to perform with similar success, and plays against a league-average team.
+
+### Conclusion
+
+Each team in the NHL has had a unique story from the past five years. While some have improved, others have declined. Much of this can be attributed to their individual success as a team, but team performance also depends on the competitive environment they play in. Taking divisional success into account provides a clearer picture of the true success of a team. When fans and analysts evaluate teams, it is important to recognize a team’s trends in success, and the competitive atmosphere they exist within.
 
