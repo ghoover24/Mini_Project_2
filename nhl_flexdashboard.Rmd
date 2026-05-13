@@ -227,6 +227,12 @@ SRS_plot <- nhl_all |>
 girafe(ggobj = SRS_plot)
 ```
 
+```{r}
+lm_SRS <- lm(SRS ~ W_PCT, data = nhl_all)
+summary(lm_SRS)
+```
+
+
 ### Select teams
 
 ```{r SRS plot, echo=FALSE}
