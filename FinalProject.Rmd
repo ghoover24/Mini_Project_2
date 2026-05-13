@@ -21,6 +21,7 @@ library(httr2)
 library(httr)
 library(leaflet)
 library(shiny)
+library(scales)
 library(ggiraph)
 ```
 
@@ -50,7 +51,7 @@ Column {data-width=400}
 Team Success {data-orientation=rows}
 =====================================     
 
-Column {data-width=650}
+Row
 -----------------------------------------------------------------------
 
 ```{r setup nhl data set, include=FALSE}
@@ -214,6 +215,12 @@ renderPlot(
 )
 ```
 
+Row
+-----------------------------------------------------------------------
+
+Over the course of many seasons, each teams’ successes can drastically change due to many different factors. This plot allows you to see these trends over the past five seasons and compare them across teams. For example, in the default settings, you can see how the total number of games three teams have won since the 2021-2022 season. In the previous three seasons, the Colorado Avalanche’s wins have remained relatively steady and increased by five games for the most recent season (2025-2026). The Dallas Stars have also had a stable number of wins across seasons. The Minnesota Wild is seen to have a fluctuating number of wins with a dramatic decrease from the 2021-2022 season to the 2023-2024 season. However, the Wild are on a general incline in wins. 
+
+
 Map of Teams
 =====================================
 
@@ -253,7 +260,7 @@ It is also interesting to note that the Canadian teams are fairly close to the A
 Conference Strength
 =====================================   
 
-Column
+Row
 -------------------------------------
 
 ```{r density plot, echo=FALSE}
@@ -274,13 +281,65 @@ renderPlot(
 )
 ```
 
-Column
--------------------------------------
-
 In the NHL, intradivisional games are frequent between teams. Due to differences in teams’ skill levels within the divisions, a certain division may be more difficult than another. These variations in ability create a reality that teams of a certain division may experience greater competitive challenges than the team of another division. Sports statisticians describe this phenomenon as “strength of schedule.”
 
 This density plot shows the differences between the divisions through the past five NHL seasons. Generally speaking, the central division experienced a lot of success from 2022 through 2024, which means that the average team would be less likely to succeed in that division during that time frame. However, the central division appears to have tailed off slightly in 2026, with a distribution of winning percentages centered below .500.
 
+Column
+-------------------------------------
+
+### Atlantic Division
+```{r, echo = FALSE}
+Atlantic_table <- data.frame(nhl_all) |>
+  filter(!is.na(conference)) |>
+  filter(division == "Atlantic") |>
+  group_by(Team) |>
+  summarize(W = sum(W),
+            L = sum(L),
+            GP = sum(GP),
+            Win_Pct = round((W/GP), 3)) |>
+  arrange(desc(Win_Pct))
+knitr::kable(Atlantic_table)
+```
+### Central Division
+```{r, echo = FALSE}
+Central_table <- data.frame(nhl_all) |>
+  filter(!is.na(conference)) |>
+  filter(division == "Central") |>
+  group_by(Team) |>
+  summarize(W = sum(W),
+            L = sum(L),
+            GP = sum(GP),
+            Win_Pct = round((W/GP), 3)) |>
+  arrange(desc(Win_Pct))
+knitr::kable(Central_table)
+```
+### Metropolitan Division
+```{r, echo = FALSE}
+Metropolitan_table <- data.frame(nhl_all) |>
+  filter(!is.na(conference)) |>
+  filter(division == "Metropolitan") |>
+  group_by(Team) |>
+  summarize(W = sum(W),
+            L = sum(L),
+            GP = sum(GP),
+            Win_Pct = round((W/GP), 3)) |>
+  arrange(desc(Win_Pct))
+knitr::kable(Metropolitan_table)
+```
+### Pacific Division
+```{r, echo = FALSE}
+Pacific_table <- data.frame(nhl_all) |>
+  filter(!is.na(conference)) |>
+  filter(division == "Pacific") |>
+  group_by(Team) |>
+  summarize(W = sum(W),
+            L = sum(L),
+            GP = sum(GP),
+            Win_Pct = round((W/GP), 3)) |>
+  arrange(desc(Win_Pct))
+knitr::kable(Pacific_table)
+```
 
 Team Luck
 =====================================   
