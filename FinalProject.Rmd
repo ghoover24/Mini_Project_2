@@ -256,14 +256,18 @@ inputPanel(
 renderPlot(
   nhl_all |>
     filter(Team %in% input$chosen_team) |> # filter teams to the selected teams
-    ggplot(aes(x = season, y = .data[[input$chosen_stat]], color = Team)) + # y-axis is chosen statistic
+    ggplot(aes(x = season, y = .data[[input$chosen_stat]], 
+               color = fct_reorder2(as.factor(Team), season, .data[[input$chosen_stat]]))) + # y-axis is chosen statistic
     geom_point() + # each point represents a team at a specific season
     geom_smooth() + 
     labs(x = "Season",
-         y = "Chosen Statistic") +
+         y = input$chosen_stat) +
     theme_classic() # nice theme
 )
+
+# if else statement 
 ```
+
 
 Row
 -----------------------------------------------------------------------
