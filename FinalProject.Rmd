@@ -307,53 +307,53 @@ Column
 ### Atlantic Division
 ```{r, echo = FALSE}
 Atlantic_table <- data.frame(nhl_all) |>
-  filter(!is.na(conference)) |>
-  filter(division == "Atlantic") |>
+  filter(!is.na(conference)) |>           # eliminates teams that no longer exists
+  filter(division == "Atlantic") |>       # includes only Atlantic teams
   group_by(Team) |>
   summarize(W = sum(W),
             L = sum(L),
             GP = sum(GP),
-            Win_Pct = round((W/GP), 3)) |>
-  arrange(desc(Win_Pct))
+            Win_Pct = round((W/GP), 3)) |>  # aggregates records from all seasons
+  arrange(desc(Win_Pct))                  # puts best teams at the top
 knitr::kable(Atlantic_table)
 ```
 ### Central Division
 ```{r, echo = FALSE}
 Central_table <- data.frame(nhl_all) |>
-  filter(!is.na(conference)) |>
-  filter(division == "Central") |>
+  filter(!is.na(conference)) |>          # eliminates teams that no longer exists
+  filter(division == "Central") |>       # includes only Central teams
   group_by(Team) |>
   summarize(W = sum(W),
             L = sum(L),
             GP = sum(GP),
-            Win_Pct = round((W/GP), 3)) |>
-  arrange(desc(Win_Pct))
+            Win_Pct = round((W/GP), 3)) |>  # aggregates records from all seasons
+  arrange(desc(Win_Pct))                  # puts best teams at the top
 knitr::kable(Central_table)
 ```
 ### Metropolitan Division
 ```{r, echo = FALSE}
 Metropolitan_table <- data.frame(nhl_all) |>
-  filter(!is.na(conference)) |>
-  filter(division == "Metropolitan") |>
+  filter(!is.na(conference)) |>         # eliminates teams that no longer exists
+  filter(division == "Metropolitan") |>       # includes only Metropolitan teams
   group_by(Team) |>
   summarize(W = sum(W),
             L = sum(L),
             GP = sum(GP),
-            Win_Pct = round((W/GP), 3)) |>
-  arrange(desc(Win_Pct))
+            Win_Pct = round((W/GP), 3)) |>  # aggregates records from all seasons
+  arrange(desc(Win_Pct))                  # puts best teams at the top
 knitr::kable(Metropolitan_table)
 ```
 ### Pacific Division
 ```{r, echo = FALSE}
 Pacific_table <- data.frame(nhl_all) |>
-  filter(!is.na(conference)) |>
-  filter(division == "Pacific") |>
+  filter(!is.na(conference)) |>         # eliminates teams that no longer exists
+  filter(division == "Pacific") |>       # includes only Pacific teams
   group_by(Team) |>
   summarize(W = sum(W),
             L = sum(L),
             GP = sum(GP),
-            Win_Pct = round((W/GP), 3)) |>
-  arrange(desc(Win_Pct))
+            Win_Pct = round((W/GP), 3)) |>  # aggregates records from all seasons
+  arrange(desc(Win_Pct))                  # puts best teams at the top
 knitr::kable(Pacific_table)
 ```
 
@@ -366,13 +366,13 @@ Column
 ```{r, echo = FALSE}
 inputPanel(
   selectInput("team_select", label = "Choose a team:",
-              choices = c(nhl_all$Team), selected = c("Minnesota Wild")
+              choices = c(nhl_all$Team), selected = c("Minnesota Wild") #allows user to select team and defaults to MN Wild
 ))
 
 renderPlot(
 nhl_all |> 
     mutate(selected = Team == input$team_select) |>
-    ggplot(aes(x = W_PCT, y = SRS)) + 
+    ggplot(aes(x = W_PCT, y = SRS)) +             #creates plot with winning pct and SRS
     geom_point(aes(color = selected, size = selected), show.legend = FALSE) +
     geom_smooth(method = lm, se = FALSE) +
     labs(y = "Simple Rating System (SRS)", x = "Winning Percentage") +
