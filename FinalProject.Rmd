@@ -274,14 +274,14 @@ Row
 
 ```{r density plot, echo=FALSE}
 inputPanel(
-  selectInput("year", label = "Chose a Season:",
-              choices = c(2022, 2023, 2024, 2025, 2026))
+  selectInput("year", label = "Choose a Season:",
+              choices = c(2022, 2023, 2024, 2025, 2026))     #allows user to select a season
 )
 
 renderPlot(
   nhl_all |>
-    rename(Division = division) |>
-    filter(!is.na(conference), 
+    rename(Division = division) |>         #fixes the title for the legend
+    filter(!is.na(conference),             #eliminates teams that no longer exists
            season == input$year) |>
     ggplot(aes(x = W_PCT, color = Division, fill = Division)) +
     geom_density(bw = "nrd0", alpha = 0.4) +
