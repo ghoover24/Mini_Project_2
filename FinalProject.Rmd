@@ -46,7 +46,11 @@ Source code for this dashboard can be found [here](https://github.com/ghoover24/
 
 Column {data-width=400}
 -------------------------------------
-(Image goes here)
+
+```{r, echo=FALSE}
+
+knitr::include_graphics("NHL-logo.jpg")
+```
 
 
 ```{r setup nhl data set, include=FALSE}
