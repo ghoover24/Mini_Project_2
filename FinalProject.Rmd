@@ -23,6 +23,7 @@ library(leaflet)
 library(shiny)
 library(scales)
 library(ggiraph)
+library(ggthemes)
 ```
 
 About
@@ -49,7 +50,7 @@ Column {data-width=400}
 
 ```{r, echo=FALSE}
 
-knitr::include_graphics("NHL-logo.jpg")
+knitr::include_graphics("NHL-logo.jpg") # insert image on home page
 ```
 
 
@@ -279,17 +280,19 @@ Row
 ```{r density plot, echo=FALSE}
 inputPanel(
   selectInput("year", label = "Choose a Season:",
-              choices = c(2022, 2023, 2024, 2025, 2026))     #allows user to select a season
+              choices = c(2022, 2023, 2024, 2025, 2026))     # allows user to select a season
 )
 
 renderPlot(
   nhl_all |>
-    rename(Division = division) |>         #fixes the title for the legend
-    filter(!is.na(conference),             #eliminates teams that no longer exists
+    rename(Division = division) |>         # fixes the title for the legend
+    filter(!is.na(conference),             # eliminates teams that no longer exists
            season == input$year) |>
     ggplot(aes(x = W_PCT, color = Division, fill = Division)) +
     geom_density(bw = "nrd0", alpha = 0.4) +
     labs(x = "Winnning Percentage", y = "Density") +
+    scale_color_colorblind() +             # fixes colors to be color blind friendly
+    scale_fill_colorblind() +
     theme_classic()
 )
 ```
