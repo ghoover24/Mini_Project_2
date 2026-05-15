@@ -35,7 +35,7 @@ Column {data-width=600}
 
 Given the increased data availability and growing popularity of the National Hockey League (NHL), this project analyzes the league’s 32 hockey teams, with data dating back to 2022. With these statistics, we hope to answer key questions:
 
-- How have teams’ success, as measured through winning percentage, goals, and points, shifted through the years?
+- How have teams’ successes, as measured through winning percentage, goals, and points, shifted through the years?
 
 - Which conferences are the most challenging to compete in?
 
@@ -374,8 +374,9 @@ Column
 ```{r, echo = FALSE}
 inputPanel(
   selectInput("team_select", label = "Choose a team:",
-              choices = c(nhl_all$Team), selected = c("Minnesota Wild") #allows user to select team and defaults to MN Wild
-))
+              choices = c(nhl_all$Team), 
+              selected = nhl_all$Team["Colorado Avalanche"])) #allows user to select team and defaults to Colorado Avalanche
+
 
 renderPlot(
 nhl_all |> 
