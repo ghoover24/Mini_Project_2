@@ -268,8 +268,6 @@ renderPlot(
          color = "Team") +
     theme_classic() # nice theme
 )
-
-# if else statement 
 ```
 
 
