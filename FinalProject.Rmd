@@ -198,7 +198,7 @@ nhl_map <- nhl_all |>
 Map of Teams
 =====================================
 
-Column
+Column {data-width=400}
 -------------------------------------
 
 ```{r, echo = FALSE}
@@ -225,7 +225,7 @@ leaflet(nhl_map_26) |>
 ```
 
 
-Column
+Column {data-width=600}
 -------------------------------------
 
 From the map you can see geographically where each teams’ home stadium resides. There is a general trend for many teams to be located near coasts with many gaps within the Midwest and Pacific Northwest. Most of the arenas are clustered in the Northeast region in small, densely populated states with larger hockey cultures.
@@ -266,15 +266,16 @@ renderPlot(
     labs(x = "Season",
          y = input$chosen_stat,
          color = "Team") +
-    theme_classic() # nice theme
+    theme_classic() + # nice theme
+    scale_color_colorblind() # color blind friendly
 )
 ```
 
 
-Row
+Column
 -----------------------------------------------------------------------
 
-Over the course of many seasons, each teams’ successes can drastically change due to many different factors. This plot allows you to see these trends over the past five seasons and compare them across teams. For example, in the default settings, you can see how the total number of games three teams have won since the 2021-2022 season. In the previous three seasons, the Colorado Avalanche’s wins have remained relatively steady and increased by five games for the most recent season (2025-2026). The Dallas Stars have also had a stable number of wins across seasons. The Minnesota Wild is seen to have a fluctuating number of wins with a dramatic decrease from the 2021-2022 season to the 2023-2024 season. However, the Wild are on a general incline in wins. 
+Over the course of many seasons, each teams’ successes can drastically change due to many different factors. This plot allows you to see these trends over the past five seasons and compare them across teams. For example, in the default settings, you can see how the total number of games three teams have won since the 2021-2022 season. In the previous three seasons, the Colorado Avalanche’s wins have remained relatively steady and increased by five games for the most recent season (2025-2026). The Dallas Stars have also had a stable number of wins across seasons. The Minnesota Wild is seen to have a fluctuating number of wins with a dramatic decrease from the 2021-2022 season to the 2023-2024 season. However, the Wild are on a general incline in wins. With this plot you can also track and compare team success with other variables like number of losses, win percentage, points (2 points are awarded to teams per win, 1 point per overtime/shootout loss), goals for (scored for team), and goals against (scored against the team). 
 
 
 Conference Strength
